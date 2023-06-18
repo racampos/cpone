@@ -1,3 +1,3 @@
-import { Add } from './Add.js';
+import { Cpone } from './Cpone.js';
 
-export { Add };
+export { Cpone };
