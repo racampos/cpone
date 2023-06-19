@@ -29,8 +29,8 @@ const nftHashCS = CircuitString.fromString(nftSha256Hash.digest('hex'));
 const nftHash = Poseidon.hash(nftHashCS.toFields());
 
 // Temporary hardcoded endorserId of the endorser's Tweeter handle
-const endorser = CircuitString.fromString('@TheRealBuzz');
-const endorserHash = Poseidon.hash(endorser.toFields());
+const endorserCS = CircuitString.fromString('TheRealBuzz');
+const endorserHash = Poseidon.hash(endorserCS.toFields());
 
 let proofsEnabled = false;
 function createLocalBlockchain() {
@@ -93,8 +93,14 @@ describe('Cpone', () => {
       const response = await fetch('https://cpone.free.beeceptor.com/1');
       const data = await response.json();
 
-      const nftHash = Field(data.data.nftHash);
-      const endorserHash = Field(data.data.endorserHash);
+      const nftSHA256Hash = data.data.nftHash;
+      const nftHashCS = CircuitString.fromString(nftSHA256Hash);
+      const nftHash = Poseidon.hash(nftHashCS.toFields());
+
+      const endorser = data.data.endorser;
+      const endorserCS = CircuitString.fromString(endorser);
+      const endorserHash = Poseidon.hash(endorserCS.toFields());
+
       const signature = Signature.fromJSON(data.signature);
 
       const txn = await Mina.transaction(deployerAccount, () => {
