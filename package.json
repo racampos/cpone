@@ -46,5 +46,10 @@
   },
   "peerDependencies": {
     "snarkyjs": "0.10.*"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "dotenv": "^16.3.1",
+    "twitter-lite": "^1.1.0"
   }
 }

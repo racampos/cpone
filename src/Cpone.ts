@@ -9,6 +9,8 @@ import {
   PublicKey,
   Signature,
   PrivateKey,
+  CircuitString,
+  Poseidon,
   Bool,
 } from 'snarkyjs';
 
@@ -16,17 +18,11 @@ import {
 const ORACLE_PUBLIC_KEY =
   'B62qqVT16fNj4nAkCApWUKyr4YVxuunbUSuXfM4gRVDKveEmjsSNWVS';
 
-// Temporary hardcoded nftId of the NFT we want to endorse
-const NFT_ID = '1202256962';
-
-// Temporary hardcoded endorserId of the endorser's Tweeter handle
-const ENDORSER_ID = '2997990243';
-
 export class Cpone extends SmartContract {
   // Define contract state
   @state(PublicKey) oraclePublicKey = State<PublicKey>();
-  @state(Field) nftId = State<Field>();
-  @state(Field) endorserId = State<Field>();
+  @state(Field) nftHash = State<Field>();
+  @state(Field) endorserHash = State<Field>();
   @state(Bool) isEndorsed = State<Bool>();
 
   // Define contract events
@@ -42,50 +38,55 @@ export class Cpone extends SmartContract {
     });
   }
 
+  // TODO: See how to pass custom paramters to init() function. We need to pass nftHash and endorserHash as parameters.
   @method init(zkappKey: PrivateKey) {
     super.init(zkappKey);
     // Initialize contract state
     this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
-    this.nftId.set(Field(NFT_ID));
-    this.endorserId.set(Field(ENDORSER_ID));
-    // Specify that caller should include signature with tx instead of proof Is this necessary
+    // Specify that caller should include signature with tx instead of proof. TODO: Is this necessary?
     this.requireSignature();
   }
 
+  // Temporary second init method used to initialize nftHash and endorserHash.
+  @method customInit(nftHash: Field, endorserHash: Field) {
+    this.nftHash.set(nftHash);
+    this.endorserHash.set(endorserHash);
+  }
+
   @method verify(
-    oracleNftId: Field,
-    oracleEndorserId: Field,
+    oracleNftHash: Field,
+    oracleEndorserHash: Field,
     signature: Signature
   ) {
     // Get the oracle public key from the contract state
     const oraclePublicKey = this.oraclePublicKey.get();
     this.oraclePublicKey.assertEquals(oraclePublicKey);
 
-    // Get the NFT ID from the contract state
-    const onchainNftId = this.nftId.get();
-    this.nftId.assertEquals(onchainNftId);
+    // Get the NFT Hash from the contract state
+    const onchainNftHash = this.nftHash.get();
+    this.nftHash.assertEquals(onchainNftHash);
 
     // Get the endorser's Twitter handle from the contract state
-    const onchainEndorserId = this.endorserId.get();
-    this.endorserId.assertEquals(onchainEndorserId);
+    const onchainEndorserHash = this.endorserHash.get();
+    this.endorserHash.assertEquals(onchainEndorserHash);
 
     // Evaluate whether the signature is valid for the provided data
     const validSignature = signature.verify(oraclePublicKey, [
-      Field(NFT_ID),
-      Field(ENDORSER_ID),
+      oracleNftHash,
+      oracleEndorserHash,
     ]);
     validSignature.assertTrue();
 
     // Evaluate whether the NFT ID from the oracle corresponds to the one commited onchain
-    this.nftId.assertEquals(oracleNftId);
+    onchainNftHash.assertEquals(oracleNftHash);
 
     // Evaluate whether the endorser ID from the oracle corresponds to the one commited onchain
-    this.endorserId.assertEquals(oracleEndorserId);
+    onchainEndorserHash.assertEquals(oracleEndorserHash);
 
     // Set the onchain flag to true
     this.isEndorsed.set(Bool(true));
 
     // Emit an event containing the verified endorser's ID
-    this.emitEvent('verified', oracleEndorserId);
+    this.emitEvent('verified', oracleEndorserHash);
   }
 }
