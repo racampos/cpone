@@ -2,8 +2,8 @@
   "name": "cpone",
   "version": "0.1.0",
   "description": "",
-  "author": "",
   "license": "Apache-2.0",
+  "author": "Rafael Campos",
   "keywords": [
     "mina-zkapp",
     "mina-zk-app",

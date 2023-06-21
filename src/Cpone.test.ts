@@ -15,6 +15,8 @@ import {
 
 import crypto from 'crypto';
 
+const endorserUsername = 'mathy782';
+
 const ORACLE_PRIVATE_KEY =
   'EKFFxwgToyjnBTCKs5p8f2v2XnmS86yJJ4yso3iR5WZ97F7ooSE1';
 const privKey = PrivateKey.fromBase58(ORACLE_PRIVATE_KEY);
@@ -29,7 +31,7 @@ const nftHashCS = CircuitString.fromString(nftSha256Hash.digest('hex'));
 const nftHash = Poseidon.hash(nftHashCS.toFields());
 
 // Temporary hardcoded endorserId of the endorser's Tweeter handle
-const endorserCS = CircuitString.fromString('TheRealBuzz');
+const endorserCS = CircuitString.fromString(endorserUsername);
 const endorserHash = Poseidon.hash(endorserCS.toFields());
 
 let proofsEnabled = false;
@@ -90,16 +92,13 @@ describe('Cpone', () => {
       const zkAppInstance = new Cpone(zkAppAddress);
       await localDeploy(zkAppInstance, zkAppPrivateKey, deployerAccount);
 
-      const response = await fetch('https://cpone.free.beeceptor.com/1');
+      const response = await fetch(
+        `https://cpone-oracle-aa6cba0bb20a.herokuapp.com/getLatestTweet/${endorserUsername}`
+      );
       const data = await response.json();
 
-      const nftSHA256Hash = data.data.nftHash;
-      const nftHashCS = CircuitString.fromString(nftSHA256Hash);
-      const nftHash = Poseidon.hash(nftHashCS.toFields());
-
-      const endorser = data.data.endorser;
-      const endorserCS = CircuitString.fromString(endorser);
-      const endorserHash = Poseidon.hash(endorserCS.toFields());
+      const nftHash = Field(data.signedData.nftPoseidonHash);
+      const endorserHash = Field(data.signedData.endorserHash);
 
       const signature = Signature.fromJSON(data.signature);
 
