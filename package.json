@@ -24,7 +24,7 @@
     "lint": "npx eslint src/* --fix"
   },
   "lint-staged": {
-    "**/*": [
+    "src/*": [
       "eslint src/* --fix",
       "prettier --write --ignore-unknown"
     ]

@@ -9,8 +9,6 @@ import {
   PublicKey,
   Signature,
   PrivateKey,
-  CircuitString,
-  Poseidon,
   Bool,
 } from 'snarkyjs';
 
