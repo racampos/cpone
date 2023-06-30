@@ -26,7 +26,7 @@ The following diagram describes the solution at a conceptual level.
 
 # Implementation
 
-In regards to the implementation, we have divided the problem in three separate components:
+When it comes to the implementation, we have approached the problem by dividing it into three distinct components:
 
 1. zkOracle
 2. Proof generation
