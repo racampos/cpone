@@ -11,3 +11,9 @@ coverage
 
 # Never commit keys to Git!
 keys
+.env
+
+# Local files
+local/*
+
+
