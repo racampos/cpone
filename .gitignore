@@ -3,6 +3,9 @@ node_modules
 build
 coverage
 
+#environment variables
+.env
+
 # Editor
 .vscode
 
@@ -16,4 +19,6 @@ keys
 # Local files
 local/*
 
-
+#next
+next-env.d.ts
+.next
