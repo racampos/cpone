@@ -3,6 +3,9 @@ node_modules
 build
 coverage
 
+#environment variables
+.env
+
 # Editor
 .vscode
 
@@ -11,3 +14,7 @@ coverage
 
 # Never commit keys to Git!
 keys
+
+#next
+next-env.d.ts
+.next
