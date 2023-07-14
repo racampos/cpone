@@ -19,19 +19,19 @@ export default function DropZoneImage() {
           className="rounded-lg"
         >
           <stop
-            stop-color="hsl(321, 76%, 60%)"
-            stop-opacity="1"
+            stopColor="hsl(321, 76%, 60%)"
+            stopOpacity="1"
             offset="45%"
           ></stop>
           <stop
-            stop-color="hsl(270, 73%, 53%)"
-            stop-opacity="1"
+            stopColor="hsl(270, 73%, 53%)"
+            stopOpacity="1"
             offset="100%"
           ></stop>
         </linearGradient>
       </defs>
       <g
-        stroke-width="2"
+        strokeWidth="2"
         stroke="url(#uundulate-grad)"
         fill="none"
         className="rounded-lg"

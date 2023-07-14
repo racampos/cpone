@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 import { cn } from '@/lib/utils';
+import { Providers } from './providers';
 
 export const metadata = {
   title: 'cpone',
@@ -17,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full overflow-hidden">
+    <html lang="en" className="overflow-hidden">
       <head />
-      <body className={cn(inter.className, 'w-screen')}>
+      <body className={cn(inter.className, 'w-screen min-h-screen')}>
         <div className="relative isolate px-6 lg:px-8">
           <div
             className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -33,8 +34,10 @@ export default function RootLayout({
               }}
             />
           </div>
-          <div className="mx-auto max-w-2xl">
-            <div className="text-center">{children}</div>
+          <div className="m-auto max-w-5xl">
+            <div className="text-center">
+              <Providers>{children}</Providers>
+            </div>
           </div>
           <div
             className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
