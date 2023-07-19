@@ -1,5 +1,5 @@
 /** @type {import('@ts-jest/dist/types').InitialOptionsTsJest} */
-export default {
+module.exports = {
   verbose: true,
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'node',
