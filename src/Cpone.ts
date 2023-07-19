@@ -37,8 +37,8 @@ export class Cpone extends SmartContract {
   }
 
   // TODO: See how to pass custom paramters to init() function. We need to pass nftHash and endorserHash as parameters.
-  @method init(zkappKey: PrivateKey) {
-    super.init(zkappKey);
+  @method init() {
+    super.init();
     // Initialize contract state
     this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
     // Specify that caller should include signature with tx instead of proof. TODO: Is this necessary?
