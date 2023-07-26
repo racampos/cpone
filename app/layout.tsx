@@ -7,6 +7,8 @@ const inter = Inter({ subsets: ['latin'] });
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
 
+import { Header } from '@/components/client';
+
 export const metadata = {
   title: 'cpone',
   description: 'lorem ipsum',
@@ -36,7 +38,10 @@ export default function RootLayout({
           </div>
           <div className="m-auto max-w-5xl">
             <div className="text-center">
-              <Providers>{children}</Providers>
+              <Providers>
+                <Header />
+                {children}
+              </Providers>
             </div>
           </div>
           <div
