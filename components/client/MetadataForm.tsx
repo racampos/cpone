@@ -1,6 +1,13 @@
 'use client';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Transition } from '@headlessui/react';
+import { useAccount } from 'wagmi';
+
+interface MetadataForm {
+  title: string;
+  author: string;
+  description: string;
+}
 
 interface MetaDataFormProps {
   confirmedImage: boolean;
@@ -11,6 +18,37 @@ export default function MetadataForm({
   confirmedImage,
   selectedImageUrl,
 }: MetaDataFormProps) {
+  // const [title, setTitle] = useState<string>('');
+  // const [creator, setCreator] = useState<string>('');
+  // const [description, setDescription] = useState<string>('');
+  const [metadata, setMetadata] = useState<MetadataForm>({
+    title: '',
+    author: '',
+    description: '',
+  });
+  const { address } = useAccount();
+
+  const handleMetadata = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const res = await fetch('/api/submit-nft', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...metadata,
+        imageUrl: selectedImageUrl,
+        hash: '123',
+        address: address as string,
+      }),
+    });
+
+    console.log(res);
+
+    const data = await res.json();
+  };
+
   return (
     <Transition.Root show={confirmedImage} as={Fragment}>
       <Transition.Child
@@ -30,7 +68,10 @@ export default function MetadataForm({
           <div className="w-1/2">
             <div className="flex flex-col items-center justify-center p-4 ">
               <div className="w-full max-w-2xl p-8 rounded shadow-md z-50 bg-white">
-                <form className="flex flex-col gap-y-6">
+                <form
+                  className="flex flex-col gap-y-6"
+                  onSubmit={handleMetadata}
+                >
                   <div className="relative">
                     <label
                       htmlFor="title"
@@ -44,6 +85,12 @@ export default function MetadataForm({
                       id="title"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2"
                       placeholder="Mina Cohort #1"
+                      onChange={(e) =>
+                        setMetadata((prev) => ({
+                          ...prev,
+                          title: e.target.value,
+                        }))
+                      }
                     />
                   </div>
 
@@ -60,6 +107,12 @@ export default function MetadataForm({
                       id="creator"
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2"
                       placeholder="cpone"
+                      onChange={(e) =>
+                        setMetadata((prev) => ({
+                          ...prev,
+                          author: e.target.value,
+                        }))
+                      }
                     />
                   </div>
                   <div className="relative">
@@ -76,6 +129,12 @@ export default function MetadataForm({
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2"
                       defaultValue={''}
                       placeholder="My first NFT on Mina!"
+                      onChange={(e) =>
+                        setMetadata((prev) => ({
+                          ...prev,
+                          description: e.target.value,
+                        }))
+                      }
                     />
                   </div>
 
