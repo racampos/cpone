@@ -1,0 +1,29 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Nft {
+  id          Int     @id @default(autoincrement())
+  title       String
+  author      String
+  description String
+  // endorser    String
+  // date        String
+  imageUrl    String
+  hash        String? // will eventually make this unique so I can filter by the hash
+  minted      Boolean @default(false)
+  endorsed    Boolean @default(false)
+  owner       User    @relation(fields: [authorId], references: [address])
+  authorId    String
+}
+
+model User {
+  address String @id @unique
+  NFTs    Nft[]
+}
