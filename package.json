@@ -18,7 +18,7 @@
     "coverage": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js --coverage",
     "format": "prettier --write --ignore-unknown **/*",
     "prepare": "husky install",
-    "test": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "testw": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js --watch",
     "lint": "npx eslint src/* --fix",
     "dev": "next dev",
@@ -69,6 +69,7 @@
     "react-dropzone": "^14.2.3",
     "snarkyjs": "^0.12.1",
     "tailwind-merge": "^1.13.2",
-    "twitter-lite": "^1.1.0"
+    "twitter-lite": "^1.1.0",
+    "zkapp-cli": "^0.11.0"
   }
 }

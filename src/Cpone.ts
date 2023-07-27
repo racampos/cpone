@@ -36,7 +36,6 @@ export class Cpone extends SmartContract {
     });
   }
 
-  // TODO: See how to pass custom paramters to init() function. We need to pass nftHash and endorserHash as parameters.
   @method init() {
     super.init();
     // Initialize contract state
@@ -45,9 +44,11 @@ export class Cpone extends SmartContract {
     this.requireSignature();
   }
 
-  // Temporary second init method used to initialize nftHash and endorserHash.
-  @method customInit(nftHash: Field, endorserHash: Field) {
+  @method setNftHash(nftHash: Field) {
     this.nftHash.set(nftHash);
+  }
+
+  @method setEndorserHash(endorserHash: Field) {
     this.endorserHash.set(endorserHash);
   }
 
