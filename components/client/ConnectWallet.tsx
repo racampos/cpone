@@ -1,6 +1,7 @@
 'use client';
 import { Fragment, useEffect, useState } from 'react';
 import { Transition, Menu } from '@headlessui/react';
+
 import { cn } from '@/lib/utils';
 
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
@@ -12,8 +13,35 @@ export default function ConnectWallet() {
     useConnect();
   const { disconnect } = useDisconnect();
 
+  const handleUser = async () => {
+    // check if user exists
+    const res = await fetch(`/api/user/${address}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data: { user: string | null } = await res.json();
+
+    // if user does not exist, add them
+    if (!data.user) {
+      const res = await fetch(`/api/user/${address}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await res.json();
+      console.log(data);
+    }
+  };
+
   useEffect(() => {
     setUserAddress(`${address?.slice(0, 6)}...`);
+
+    // see if the user is already in the database, if not, add them. If they are, do nothing
+    if (isConnected) handleUser();
   }, [isConnected]);
 
   return (
