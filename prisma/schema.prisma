@@ -13,10 +13,10 @@ model Nft {
   title       String
   author      String
   description String
-  // endorser    String
-  // date        String
+  endorser    String
+  date        String
   imageUrl    String
-  hash        String? // will eventually make this unique so I can filter by the hash
+  nftHash     String  @unique
   minted      Boolean @default(false)
   endorsed    Boolean @default(false)
   owner       User    @relation(fields: [authorId], references: [address])
