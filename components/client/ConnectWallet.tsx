@@ -11,7 +11,7 @@ export default function ConnectWallet() {
   const [userAddress, setUserAddress] = useState('');
   const { connect, connectors, error, isLoading, pendingConnector } =
     useConnect();
-  const { disconnect } = useDisconnect();
+  const { disconnect, isSuccess: isDisconnected } = useDisconnect();
 
   const handleUser = async () => {
     // check if user exists
@@ -44,12 +44,18 @@ export default function ConnectWallet() {
     if (isConnected) handleUser();
   }, [isConnected]);
 
+  useEffect(() => {
+    if (isDisconnected) {
+      setUserAddress('');
+    }
+  }, [isDisconnected]);
+
   return (
     <Menu as="div" className="relative ml-3">
       <div>
         <Menu.Button className="flex max-w-xs items-center rounded-lg p-2 px-4 bg-gray-600 text-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2">
           <span className="sr-only">Wallet</span>
-          <p className="">{isConnected ? userAddress : 'Connect'}</p>
+          <p className="text-sm">{isConnected ? userAddress : 'Connect'}</p>
         </Menu.Button>
       </div>
       <Transition
