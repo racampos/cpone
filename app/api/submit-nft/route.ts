@@ -1,36 +1,55 @@
 import { NextResponse } from 'next/server';
+import { CircuitString, Poseidon } from 'snarkyjs';
+import crypto from 'crypto';
+
 import { prisma } from '@/lib/db';
 
 interface SubmitNftBody {
-  address: string;
   title: string;
   author: string;
   description: string;
-  hash: string;
+  endorser: string;
+  date: string;
+  address: string;
   imageUrl: string;
 }
 
 export async function POST(request: Request) {
-  const { address, title, author, description, hash, imageUrl }: SubmitNftBody =
-    await request.json();
+  const {
+    title,
+    author,
+    description,
+    endorser,
+    date,
+    address,
+    // prehash,
+    imageUrl,
+  }: SubmitNftBody = await request.json();
 
-  console.log({ address, title, author, description, hash, imageUrl });
+  const preHashString = {
+    address,
+    title,
+    author,
+    description,
+    imageUrl,
+    endorser,
+  };
 
-  // const user = await prisma.user.findUnique({
-  //   where: {
-  //     address: address,
-  //   },
-  // });
+  const nftSha256Hash = crypto.createHash('sha256');
 
-  // if (!user) return { status: 404 };
+  const nftSha256Digested = nftSha256Hash
+    .update(JSON.stringify(preHashString))
+    .digest('hex');
 
   const nft = await prisma.nft.create({
     data: {
       title,
       author,
       description,
+      endorser,
+      date,
       imageUrl,
-      hash,
+      nftHash: nftSha256Digested,
       owner: {
         connect: {
           address: address,

@@ -37,5 +37,9 @@ export async function POST(
     },
   });
 
+  if (user) {
+    cookies().set('user', user.address, {});
+  }
+
   return NextResponse.json({ user });
 }
