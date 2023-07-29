@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 
+export const revalidate = 1;
+
 export default async function MintPage() {
   revalidatePath('/collection');
 
@@ -27,10 +29,10 @@ export default async function MintPage() {
       <h1 className="sticky text-3xl font-bold mb-8">NFTs</h1>
       <ul
         role="list"
-        className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 w-10/12"
+        className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8 w-11/12 max-h-[75vh] overflow-y-scroll"
       >
         {nfts.map((nft) => (
-          <li key={nft.title} className="relative">
+          <li key={`${nft.nftHash}`} className="relative px-3">
             <div className="group aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-100">
               <img
                 src={nft.imageUrl}
