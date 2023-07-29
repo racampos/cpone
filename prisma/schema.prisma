@@ -9,18 +9,20 @@ generator client {
 }
 
 model Nft {
-  id          Int     @id @default(autoincrement())
-  title       String
-  author      String
-  description String
-  endorser    String
-  date        String
-  imageUrl    String
-  nftHash     String  @unique
-  minted      Boolean @default(false)
-  endorsed    Boolean @default(false)
-  owner       User    @relation(fields: [authorId], references: [address])
-  authorId    String
+  id            Int     @id @default(autoincrement())
+  title         String
+  author        String
+  description   String
+  endorser      String
+  date          String
+  imageUrl      String
+  nftHash       String  @unique
+  minted        Boolean @default(false)
+  endorsed      Boolean @default(false)
+  etherscanLink String?
+  ipfsLink      String?
+  owner         User    @relation(fields: [authorId], references: [address])
+  authorId      String
 }
 
 model User {
