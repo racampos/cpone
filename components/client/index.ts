@@ -3,7 +3,7 @@ import ConfirmImage from './ConfirmImage';
 import MetadataForm from './MetadataForm';
 import ConnectWallet from './ConnectWallet';
 import Header from './Header';
-import MintNft from './MintNft';
+import MintNftButton from './MintNftButton';
 import CopyHash from './CopyHash';
 import InputTweet from './InputTweet';
 
@@ -13,7 +13,7 @@ export {
   MetadataForm,
   ConnectWallet,
   Header,
-  MintNft,
+  MintNftButton,
   CopyHash,
   InputTweet,
 };

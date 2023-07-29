@@ -37,9 +37,9 @@ export default function DropZone() {
           leave="ease-out duration-300 absolute"
           leaveFrom="opacity-100 translate-y-full translate-x-0 "
           leaveTo="opacity-0 translate-y-0 translate-x-full"
-          className="w-5/12 p-8 rounded shadow-md z-50 bg-white"
+          className="w-5/12 p-8 rounded shadow-md z-50 bg-white "
         >
-          <div {...getRootProps()} className="relative z-10 bg-white">
+          <div {...getRootProps()} className="relative z-10 ">
             <div className="absolute inset-0 bg-opacity-50 border-2 border-black border-opacity-20 rounded-lg flex items-center justify-center p-2">
               <input {...getInputProps()} />
               <p className="text-black text-center">
