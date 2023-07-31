@@ -38,10 +38,7 @@ export class Cpone extends SmartContract {
 
   @method init() {
     super.init();
-    // Initialize contract state
     this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
-    // Specify that caller should include signature with tx instead of proof. TODO: Is this necessary?
-    this.requireSignature();
   }
 
   @method setNftHash(nftHash: Field) {
