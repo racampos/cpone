@@ -42,10 +42,12 @@ export class Cpone extends SmartContract {
   }
 
   @method setNftHash(nftHash: Field) {
+    this.isEndorsed.assertEquals(Bool(false));
     this.nftHash.set(nftHash);
   }
 
   @method setEndorserHash(endorserHash: Field) {
+    this.isEndorsed.assertEquals(Bool(false));
     this.endorserHash.set(endorserHash);
   }
 
