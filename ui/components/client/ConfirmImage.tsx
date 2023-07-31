@@ -7,19 +7,25 @@ interface ConfirmImageProps {
   showConfirmation: boolean;
   setShowConfirmation: React.Dispatch<React.SetStateAction<boolean>>;
   setConfirmedImage: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowMetadata: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function ConfirmImage({
   imageUrl,
   showConfirmation,
   setShowConfirmation,
   setConfirmedImage,
+  setShowMetadata,
 }: ConfirmImageProps) {
   const [open, setOpen] = useState(true);
 
   const cancelButtonRef = useRef(null);
 
   return (
-    <Transition.Root show={showConfirmation} as={Fragment}>
+    <Transition.Root
+      show={showConfirmation}
+      as={Fragment}
+      afterLeave={() => setShowMetadata(true)}
+    >
       <Dialog
         as="div"
         className="relative z-10"

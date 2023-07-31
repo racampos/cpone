@@ -6,6 +6,7 @@ import Header from './Header';
 import MintNftButton from './MintNftButton';
 import CopyHash from './CopyHash';
 import InputTweet from './InputTweet';
+import MinaInit from './MinaInit';
 
 export {
   DropZone,
@@ -16,4 +17,5 @@ export {
   MintNftButton,
   CopyHash,
   InputTweet,
+  MinaInit,
 };

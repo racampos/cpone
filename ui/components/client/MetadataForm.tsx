@@ -2,7 +2,7 @@
 import { Fragment, useState } from 'react';
 import { Transition, Dialog } from '@headlessui/react';
 import { useAccount } from 'wagmi';
-import { CheckIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
 import crypto from 'crypto';
 import { Poseidon, CircuitString } from 'snarkyjs';
 import { useRouter } from 'next/navigation';
@@ -20,17 +20,26 @@ interface MetadataForm {
 }
 
 interface MetaDataFormProps {
+  showMetadata: boolean;
+  setShowMetadata: (show: boolean) => void;
   confirmedImage: boolean;
+  setConfirmedImage: (confirmed: boolean) => void;
   selectedImageUrl: string;
+  setSelectedImageUrl: (url: string) => void;
+  showDropzone: boolean;
+  setShowDropzone: (show: boolean) => void;
 }
 
 export default function MetadataForm({
+  showMetadata,
+  setShowMetadata,
   confirmedImage,
+  setConfirmedImage,
   selectedImageUrl,
+  setSelectedImageUrl,
+  showDropzone,
+  setShowDropzone,
 }: MetaDataFormProps) {
-  // const [title, setTitle] = useState<string>('');
-  // const [creator, setCreator] = useState<string>('');
-  // const [description, setDescription] = useState<string>('');
   const [metadata, setMetadata] = useState<MetadataForm>({
     title: '',
     author: '',
@@ -40,29 +49,29 @@ export default function MetadataForm({
   });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [hash, setHash] = useState<string>('');
-  const [endorserError, setEndorserError] = useState<boolean>(false);
-  const [dateError, setDateError] = useState<boolean>(false);
   const [shake, setShake] = useState<boolean>(false);
   const [loadingSubmission, setLoadingSubmission] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
+  const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
   const { address, isConnected } = useAccount();
 
   const router = useRouter();
 
   const handleDate = (date: string) => {
-    const value = formatDate(date);
-
-    // setDate(value);
+    let input = date.replace(/[^0-9/]/g, '');
+    if (
+      (input.length === 2 || input.length === 5) &&
+      input !== metadata.date.slice(0, metadata.date.length - 1)
+    ) {
+      input += '/';
+    }
     setMetadata((prev) => ({
       ...prev,
-      date: value,
+      date: input.slice(0, 10),
     }));
   };
 
   const isValidDate = (date: string) => {
-    // the date string needs to be in the format MM/DD/YYYY
-    // so we need to check that MM and DD are both 2 numbers long
-    // check that YYYY is 4 numbers long, and the date can be any 4 digit year
     const regex = /^(0[1-9]|1[012])\/(0[1-9]|[12][0-9]|3[01])\/\d{4}$/;
 
     const isValid = regex.test(date);
@@ -71,9 +80,6 @@ export default function MetadataForm({
   };
 
   const checkEndorser = (endorser: string) => {
-    // the endorser string needs to be a valid twitter handle
-    // so we need to check if it starts with @ with regex
-    // and if it has a length of 16 or less
     const regex = /^@(\w){1,15}$/;
     const isValid = regex.test(endorser);
 
@@ -81,11 +87,24 @@ export default function MetadataForm({
   };
 
   const handleValidationCheck: () => boolean = () => {
-    const notEmpty = !Object.values(metadata).some(
-      (value) => value === '' || value === '@'
-    );
+    const passed = Object.entries(metadata).every(([name, value]) => {
+      switch (name) {
+        case 'title':
+          return value !== '';
+        case 'author':
+          return value !== '';
+        case 'description':
+          return value !== '';
+        case 'endorser':
+          return value !== '@' && checkEndorser(value);
+        case 'date':
+          return value !== '' && isValidDate(value);
+      }
+    });
+    console.log(passed);
+    console.log(metadata);
 
-    return notEmpty;
+    return passed;
   };
 
   const handleMetadata = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -99,6 +118,7 @@ export default function MetadataForm({
       return;
     }
 
+    setShowMetadata(false);
     setLoadingSubmission(true);
 
     const res = await fetch('/api/submit-nft', {
@@ -120,11 +140,29 @@ export default function MetadataForm({
       const { nftHash } = await res.json();
       setHash(nftHash);
       setShowConfirmation(true);
+      setSubmissionSuccess(true);
     }
     setLoadingSubmission(false); // need to do something for error
   };
 
-  if (loadingSubmission && !showConfirmation) {
+  const handleResetForm = () => {
+    setShowDropzone(true);
+    setShowMetadata(false);
+    setShowConfirmation(false);
+    setSubmissionSuccess(false);
+    setConfirmedImage(false);
+    setSelectedImageUrl('');
+
+    setMetadata({
+      title: '',
+      author: '',
+      description: '',
+      endorser: '@',
+      date: '',
+    });
+  };
+
+  if (loadingSubmission) {
     return (
       <Transition.Root show={loadingSubmission} as={Fragment}>
         <Transition.Child
@@ -136,7 +174,6 @@ export default function MetadataForm({
           leaveFrom="opacity-100 translate-x-0"
           leaveTo="opacity-0 translate-x-full"
           className="w-full mt-10"
-          afterLeave={() => setShowConfirmation(true)}
         >
           <div className="flex flex-col w-full h-full items-center gap-y-4">
             <div className="animate-pulse">
@@ -173,18 +210,6 @@ export default function MetadataForm({
           className="relative z-10"
           onClose={() => router.push('/collection')}
         >
-          {/* <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          > */}
-          {/* <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" /> */}
-          {/* </Transition.Child> */}
-
           <div className="fixed inset-0 z-10 overflow-y-auto">
             <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
               <Transition.Child
@@ -229,8 +254,7 @@ export default function MetadataForm({
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
-                      onClick={() => router.push('/')}
-                      // href={"/"}
+                      onClick={handleResetForm}
                     >
                       Add another Image
                     </button>
@@ -243,16 +267,6 @@ export default function MetadataForm({
                       Take me to my collection
                     </Link>
                   </div>
-                  {/* </div> */}
-                  {/* <div className="mt-5 sm:mt-6">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                      onClick={() => router.push('collection')}
-                    >
-                      Take me to my collection
-                    </button>
-                  </div> */}
                 </div>
               </Transition.Child>
             </div>
@@ -263,7 +277,7 @@ export default function MetadataForm({
   }
 
   return (
-    <Transition.Root show={confirmedImage && !submitted} as={Fragment}>
+    <Transition.Root show={showMetadata} as={Fragment}>
       <Transition.Child
         as="div"
         enter="ease-out duration-300 max-w-5xl"
@@ -272,9 +286,20 @@ export default function MetadataForm({
         leave="ease-in duration-300"
         leaveFrom="opacity-100 translate-x-0"
         leaveTo="opacity-0 translate-x-full"
-        className="w-full mt-4"
-        afterLeave={() => setLoadingSubmission(true)}
+        className="flex flex-col w-full"
+        afterLeave={() => {
+          setLoadingSubmission(true); // FIX THIS
+        }}
       >
+        <div className="flex w-full items-start">
+          <div className="flex rounded-full w-8 h-8 items-center content-center justify-center">
+            <ArrowUturnLeftIcon
+              className="h-3/4 w-3/4 text-gray-500 hover:cursor-pointer"
+              onClick={handleResetForm}
+            />
+          </div>
+        </div>
+
         <div className="flex">
           <div className="flex w-1/2 items-center justify-center">
             <img src={selectedImageUrl} alt="selected image" className="" />
@@ -304,6 +329,7 @@ export default function MetadataForm({
                           : 'ring-gray-300'
                       )} placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2`}
                       placeholder="Mina Cohort #1"
+                      value={metadata.title}
                       onChange={(e) =>
                         setMetadata((prev) => ({
                           ...prev,
@@ -355,8 +381,8 @@ export default function MetadataForm({
                           ? 'animate-shake ring-red-300'
                           : 'ring-gray-300'
                       )} placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2`}
-                      defaultValue={''}
                       placeholder="My first NFT on Mina!"
+                      value={metadata.description}
                       onChange={(e) =>
                         setMetadata((prev) => ({
                           ...prev,
@@ -385,11 +411,8 @@ export default function MetadataForm({
                       placeholder="@MinaProtocol"
                       value={metadata.endorser}
                       onChange={(e) => {
-                        const isValid = checkEndorser(e.target.value);
                         const value = e.target.value;
-                        setEndorserError(!isValid);
                         if (value[0] !== '@') {
-                          // setInputValue('@' + value);
                           setMetadata((prev) => ({
                             ...prev,
                             endorser: '@' + e.target.value,
@@ -416,19 +439,14 @@ export default function MetadataForm({
                       name="date"
                       id="date"
                       className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ${cn(
-                        shake && isValidDate(metadata.date)
+                        shake && !isValidDate(metadata.date)
                           ? 'animate-shake ring-red-300'
                           : 'ring-gray-300'
                       )} placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 px-2`}
                       placeholder="12/01/2018"
+                      value={metadata.date}
                       onChange={(e) => {
-                        const isValid = isValidDate(e.target.value);
                         handleDate(e.target.value);
-                        setDateError(!isValid);
-                        // setMetadata((prev) => ({
-                        //   ...prev,
-                        //   date: e.target.value,
-                        // }));
                       }}
                     />
                   </div>
