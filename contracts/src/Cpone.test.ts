@@ -62,7 +62,7 @@ describe('Cpone', () => {
     zkAppPrivateKey: PrivateKey;
 
   beforeAll(async () => {
-    if (proofsEnabled) Cpone.compile();
+    await Cpone.compile();
   });
 
   beforeEach(async () => {
@@ -72,9 +72,6 @@ describe('Cpone', () => {
   });
 
   afterAll(async () => {
-    // `shutdown()` internally calls `process.exit()` which will exit the running Jest process early.
-    // Specifying a timeout of 0 is a workaround to defer `shutdown()` until Jest is done running all tests.
-    // This should be fixed with https://github.com/MinaProtocol/mina/issues/10943
   });
 
   it('generates and deploys the `Cpone` smart contract', async () => {
@@ -96,7 +93,6 @@ describe('Cpone', () => {
 
       const nftHash = Field(data.signedData.nftPoseidonHash);
       const endorserHash = Field(data.signedData.endorserHash);
-
       const signature = Signature.fromJSON(data.signature);
 
       const txn = await Mina.transaction(deployerAccount, () => {

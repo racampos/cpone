@@ -1,0 +1,235 @@
+{
+  "version": 1,
+  "deployAliases": {
+    "berkeley": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley2": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley2.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1"
+    },
+    "berkeley3": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley3.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley4": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley4.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley5": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley5.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley6": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley6.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley7": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley7.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley8": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley8.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1"
+    },
+    "berkeley9": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley9.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley10": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley10.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley11": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley11.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley12": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley12.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley13": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley13.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley14": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley14.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley15": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley15.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley16": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley16.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley17": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley17.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley18": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley18.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley19": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley19.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley20": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley20.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley21": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley21.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley22": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley22.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley23": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley23.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley24": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley24.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley25": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley25.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley26": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley26.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley27": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley27.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley28": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley28.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley29": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley29.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    }
+  }
+}

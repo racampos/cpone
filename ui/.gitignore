@@ -1,0 +1,24 @@
+# NodeJS
+node_modules
+build
+coverage
+
+#environment variables
+.env
+
+# Editor
+.vscode
+
+# System
+.DS_Store
+
+# Never commit keys to Git!
+keys
+.env
+
+# Local files
+local/*
+
+#next
+next-env.d.ts
+.next

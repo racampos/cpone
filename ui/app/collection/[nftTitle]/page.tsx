@@ -76,8 +76,8 @@ export default async function MintNftPage({
           <MintNftButton
             endorsed={nft!.endorsed}
             minted={nft!.minted}
-            ipfsLink={nft!.ipfsLink}
-            etherscanLink={nft!.etherscanLink}
+            ipfsLink={""}//{nft!.ipfsLink}
+            etherscanLink={""}//{nft!.etherscanLink}
           />
         </div>
       </div>

@@ -32,13 +32,14 @@ export class Cpone extends SmartContract {
     super.deploy(args);
     this.account.permissions.set({
       ...Permissions.default(),
-      editState: Permissions.proof(),
+      editState: Permissions.proofOrSignature(),
     });
   }
 
   @method init() {
     super.init();
     this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
+    this.requireSignature();
   }
 
   @method setNftHash(nftHash: Field) {
