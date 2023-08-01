@@ -1,4 +1,11 @@
-import { fetchAccount, PublicKey, Field, Signature, Bool } from 'snarkyjs';
+import {
+  fetchAccount,
+  PublicKey,
+  Field,
+  Signature,
+  Bool,
+  PrivateKey,
+} from 'snarkyjs';
 
 import type {
   ZkappWorkerRequest,
@@ -59,6 +66,7 @@ export default class ZkappWorkerClient {
   }
 
   createUpdateHashesTransaction(nftHash: string, endorserHash: string) {
+    console.log({ nftHash, endorserHash });
     return this._call('createUpdateHashesTransaction', {
       nftHash: nftHash,
       endorserHash: endorserHash,
@@ -74,6 +82,30 @@ export default class ZkappWorkerClient {
       nftHash: oracleNftHash,
       endorserHash: oracleEndorserHash,
       signature: oracleSignature,
+    });
+  }
+
+  // createDeployContract(
+  //   privateKey58: PrivateKey,
+  //   feePayerPublicKey58: PublicKey
+  //   nftHash: string,
+  //   endorserHash: string
+  // ) {
+  //   return this._call('createDeployContract', {
+  //     privateKey58: privateKey58.toBase58(),
+  //     feePayerPublicKey58: feePayerPublicKey58.toBase58(),
+  //     nftHash: nftHash,
+  //     endorserHash: endorserHash,
+  //   });
+  // }
+
+  createDeployContract(
+    privateKey58: PrivateKey,
+    feePayerPublicKey58: PublicKey
+  ) {
+    return this._call('createDeployContract', {
+      privateKey58: privateKey58.toBase58(),
+      feePayerPublicKey58: feePayerPublicKey58.toBase58(),
     });
   }
 
@@ -109,7 +141,11 @@ export default class ZkappWorkerClient {
     this.worker = new Worker(new URL('./zkappWorker.ts', import.meta.url));
     this.promises = {};
     this.nextId = 0;
+    this.worker.onmessageerror = (event: MessageEvent) => {
+      console.log(event);
+    };
     this.worker.onmessage = (event: MessageEvent<ZkappWorkerReponse>) => {
+      console.log(event);
       this.promises[event.data.id].resolve(event.data.data);
       delete this.promises[event.data.id];
     };
@@ -123,7 +159,9 @@ export default class ZkappWorkerClient {
         fn,
         args,
       };
+      console.log(message);
       this.worker.postMessage(message);
+      console.log(this.worker);
       this.nextId++;
     });
     // return '';
