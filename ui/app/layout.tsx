@@ -5,7 +5,8 @@ import { Inter } from 'next/font/google';
 const inter = Inter({ subsets: ['latin'] });
 
 import { cn } from '@/lib/utils';
-import { Providers } from './providers';
+import WagmiProvider from './WagmiProvider';
+import MinaProvider from './MinaProvider';
 
 import { Header } from '@/components/client';
 
@@ -38,10 +39,12 @@ export default function RootLayout({
           </div>
           <div className="m-auto max-w-5xl">
             <div className="text-center">
-              <Providers>
-                <Header />
-                {children}
-              </Providers>
+              <WagmiProvider>
+                <MinaProvider>
+                  <Header />
+                  {children}
+                </MinaProvider>
+              </WagmiProvider>
             </div>
           </div>
           <div
