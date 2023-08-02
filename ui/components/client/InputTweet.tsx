@@ -1,15 +1,135 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import crypto from 'crypto';
 
+import { MinaContext } from '@/lib/MinaContext';
+import type { PrivateKey, Signature } from 'snarkyjs';
+
+/**
+ * @TODO - pass in a useState to change whether it has been endorsed or not, as well if it was minted.
+ *
+ *
+ */
 export default function InputTweet({
   endorser,
   nftHash,
+  isEndorsed,
+  setIsEndorsed,
+  initializingZkApp,
 }: {
   endorser: string;
   nftHash: string;
+  isEndorsed: boolean;
+  setIsEndorsed: React.Dispatch<React.SetStateAction<boolean>>;
+  initializingZkApp: boolean;
 }) {
   const [tweetUrl, setTweetUrl] = useState('');
   const [fetching, setFetching] = useState(false);
+  const [fetchComplete, setFetchComplete] = useState(false);
+  const [runVerify, setRunVerify] = useState(false);
+  const [fetchedNFTData, setFetchedNFTData] = useState<{
+    oracleNftHash: string;
+    oracleEndorserHash: string;
+    oracleSignature: string; // fix later
+  }>({
+    oracleNftHash: '',
+    oracleEndorserHash: '',
+    oracleSignature: '',
+  });
+  const mina = useContext(MinaContext);
+  let transactionFee = 0.1;
+
+  const handleVerify = async ({
+    oracleNftHash,
+    oracleEndorserHash,
+    oracleSignature,
+  }: {
+    oracleNftHash: string;
+    oracleEndorserHash: string;
+    oracleSignature: string;
+  }) => {
+    const { Signature, PublicKey } = await import('snarkyjs');
+
+    const minaWindow = (window as any).mina;
+    console.log(`minaWindow: ${minaWindow}`);
+
+    // const publicKeyBase58: string = (
+    //   await minaWindow.ZkappWorkerClient.requestAccounts()
+    // )[0];
+
+    // const publicKey = PublicKey.fromBase58(publicKeyBase58);
+    // const res = await mina.ZkappWorkerClient!.fetchAccount({
+    //   publicKey: publicKey!,
+    // });
+
+    // const signature = Signature.fromObject(oracleSignature as any);
+
+    // console.log(`signature r: ${signature.r}`);
+    // console.log(`signature s: ${signature.s}`);
+    // console.log();
+
+    // const sig = new Signature(signature.r, signature.s);
+
+    // console.log(`sig r json: ${sig.r.toJSON()}`);
+
+    // const oracleSignatureJSON = signature.toJSON();
+    // console.log(`oracleSignatureJSON: ${oracleSignatureJSON}`);
+    // const oracleSignature58 = sig.toBase58();
+    // console.log(`oracleSignature58: ${oracleSignature58}`);
+
+    // console.log(`oracleSignature: ${oracleSignature}`);
+    // console.log(`oracleNftHash: ${oracleNftHash}`);
+    // console.log(`oracleEndorserHash: ${oracleEndorserHash}`);
+    // console.log('Inside handleVerify');
+    // console.log(
+    //   `passed in props: ${oracleNftHash}, ${oracleEndorserHash}, ${oracleSignature}`
+    // );
+    // console.log(`fetchedNFTData ${fetchedNFTData}`);
+
+    console.log('getting nftHash');
+    const _nftHash = await mina.ZkappWorkerClient?.getNftHash();
+
+    console.log(`nftHash: ${_nftHash}`);
+
+    console.log('getting endorserHash');
+    const _endorserHash = await mina.ZkappWorkerClient?.getEndorserHash();
+    console.log(`endorserHash: ${_endorserHash}`);
+
+    console.log('creating verify transaction');
+    await mina.ZkappWorkerClient?.createVerifyTransaction(
+      mina.zkAppPublicKey!,
+      oracleNftHash,
+      oracleEndorserHash,
+      oracleSignature
+    );
+    console.log('created verify transaction');
+    console.log('creating prove transaction');
+    await mina.ZkappWorkerClient?.createProveTransaction();
+    console.log('created prove transaction');
+    const verifyTransactionJSON =
+      await mina.ZkappWorkerClient?.getTransactionJSON();
+    console.log('created transaction json');
+    console.log('sending transaction');
+    const { hash: verifyHash } = await (window as any).mina.sendTransaction({
+      transaction: verifyTransactionJSON,
+      feePayer: {
+        fee: transactionFee,
+        memo: '',
+      },
+    });
+    console.log('sent transaction');
+    console.log(
+      'See transaction at https://berkeley.minaexplorer.com/transaction/' +
+        verifyHash
+    );
+    setFetchComplete(true);
+    const isNowEndorsed = (
+      await mina.ZkappWorkerClient!.getIsEndorsed()
+    ).toBoolean();
+    isNowEndorsed ? console.log('Endorsed!') : console.log('Not endorsed!');
+
+    setIsEndorsed(isNowEndorsed);
+  };
 
   const handleTweetCheck = async () => {
     const res = await fetch('/api/check-tweet', {
@@ -20,10 +140,86 @@ export default function InputTweet({
       body: JSON.stringify({ tweetUrl, endorser, nftHash }),
     });
 
-    setFetching(false);
+    if (res.ok) {
+      const {
+        oracleNftHash,
+        oracleEndorserHash,
+        oracleSignature,
+      }: {
+        oracleNftHash: string;
+        oracleEndorserHash: string;
+        oracleSignature: any;
+      } = await res.json();
 
-    const { valid } = await res.json();
+      setFetchedNFTData({
+        oracleNftHash,
+        oracleEndorserHash,
+        oracleSignature,
+      });
+
+      setRunVerify(true);
+
+      // await handleVerify({
+      //   oracleNftHash,
+      //   oracleEndorserHash,
+      //   oracleSignature,
+      // });
+
+      setFetching(false);
+    }
   };
+
+  useEffect(() => {
+    if (initializingZkApp || !runVerify) return;
+
+    const { oracleNftHash, oracleEndorserHash, oracleSignature } =
+      fetchedNFTData;
+
+    (async () => {
+      const { CircuitString, Poseidon } = await import('snarkyjs');
+
+      try {
+        console.log('creating verify transaction');
+        await mina.ZkappWorkerClient?.createVerifyTransaction(
+          mina.zkAppPublicKey!,
+          oracleNftHash,
+          oracleEndorserHash,
+          oracleSignature
+        );
+        console.log('created verify transaction');
+
+        console.log('creating prove transaction');
+        await mina.ZkappWorkerClient?.createProveTransaction();
+        console.log('created prove transaction');
+
+        console.log('creating transaction json');
+        const verifyTransactionJSON =
+          await mina.ZkappWorkerClient?.getTransactionJSON();
+        console.log('created transaction json');
+
+        console.log('sending transaction');
+        const { hash: verifyHash } = await (window as any).mina.sendTransaction(
+          {
+            transaction: verifyTransactionJSON,
+            feePayer: {
+              fee: transactionFee,
+              memo: '',
+            },
+          }
+        );
+        console.log('sent transaction');
+
+        console.log(
+          'See transaction at https://berkeley.minaexplorer.com/transaction/' +
+            verifyHash
+        );
+
+        setFetchComplete(true);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  }, [initializingZkApp, runVerify]);
 
   return (
     <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
@@ -40,6 +236,7 @@ export default function InputTweet({
           setFetching(true);
           handleTweetCheck();
         }}
+        disabled={fetching || isEndorsed}
       >
         {fetching ? (
           <span className="animate-pulse ">

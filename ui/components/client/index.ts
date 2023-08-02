@@ -7,6 +7,7 @@ import MintNftButton from './MintNftButton';
 import CopyHash from './CopyHash';
 import InputTweet from './InputTweet';
 import MinaInit from './MinaInit';
+import EndorseSection from './EndorseSection';
 
 export {
   DropZone,
@@ -18,4 +19,5 @@ export {
   CopyHash,
   InputTweet,
   MinaInit,
+  EndorseSection,
 };

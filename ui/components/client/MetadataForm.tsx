@@ -50,7 +50,7 @@ export default function MetadataForm({
     date: '',
   });
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [hash, setHash] = useState<string>('');
+  const [nftHash, setNftHash] = useState<string>('');
   const [shake, setShake] = useState<boolean>(false);
   const [loadingSubmission, setLoadingSubmission] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
@@ -215,16 +215,18 @@ export default function MetadataForm({
         endorser: metadata.endorser.slice(1),
         address: address as string,
         imageUrl: selectedImageUrl,
+        zkAppPrivateKey: mina.zkAppPrivateKey!.toBase58(),
       }),
     });
 
     if (res.ok) {
-      const { nftHash } = await res.json();
-      setHash(nftHash);
+      const { nftHash: _nftHash } = await res.json();
+      setNftHash(_nftHash);
     }
   };
+
   useEffect(() => {
-    if (!hash) return;
+    if (!nftHash) return;
 
     (async () => {
       const { Poseidon, CircuitString } = await import('snarkyjs');
@@ -233,7 +235,7 @@ export default function MetadataForm({
       const endorserCS = CircuitString.fromString(cleanEndorser);
       const endorserHash = Poseidon.hash(endorserCS.toFields()).toString();
 
-      const nftHashCS = CircuitString.fromString(hash);
+      const nftHashCS = CircuitString.fromString(nftHash);
       const nftPosiedonHash = Poseidon.hash(nftHashCS.toFields()).toString();
 
       console.log('loading contract');
@@ -250,17 +252,17 @@ export default function MetadataForm({
       console.log(mina.zkAppPrivateKey!);
       console.log(mina.userPublicKey!);
 
-      // await mina.ZkappWorkerClient!.createDeployContract(
-      //   mina.zkAppPrivateKey!,
-      //   mina.userPublicKey!,
-      //   nftPosiedonHash,
-      //   endorserHash
-      // );
       await mina.ZkappWorkerClient!.createDeployContract(
         mina.zkAppPrivateKey!,
-        mina.userPublicKey!
+        mina.userPublicKey!,
+        nftPosiedonHash,
+        endorserHash
       );
       console.log('created deploy contract');
+
+      console.log('creating prove tx');
+      await mina.ZkappWorkerClient!.createProveTransaction();
+      console.log('created prove tx');
 
       console.log('creating transaction json');
       const transactionJSON =
@@ -286,7 +288,7 @@ export default function MetadataForm({
       setShowConfirmation(true);
       setSubmissionSuccess(true);
     })();
-  }, [hash]);
+  }, [nftHash]);
 
   const handleResetForm = () => {
     setShowDropzone(true);
@@ -391,7 +393,7 @@ export default function MetadataForm({
                   </Fragment>
                   {/* <div className="flex w-full"> */}
                   <div className="flex mt-5 sm:mt-6 justify-center">
-                    <CopyHash hash={hash} />
+                    <CopyHash hash={nftHash} />
                   </div>
                   <div className="flex gap-x-4 mt-5 sm:mt-6">
                     <button
