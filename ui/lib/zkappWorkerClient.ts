@@ -74,38 +74,30 @@ export default class ZkappWorkerClient {
   }
 
   createVerifyTransaction(
+    feePayerPublicKey58: PublicKey,
     oracleNftHash: string,
     oracleEndorserHash: string,
     oracleSignature: string
   ) {
     return this._call('createVerifyTransaction', {
+      feePayerPublicKey58: feePayerPublicKey58.toBase58(),
       nftHash: oracleNftHash,
       endorserHash: oracleEndorserHash,
       signature: oracleSignature,
     });
   }
 
-  // createDeployContract(
-  //   privateKey58: PrivateKey,
-  //   feePayerPublicKey58: PublicKey
-  //   nftHash: string,
-  //   endorserHash: string
-  // ) {
-  //   return this._call('createDeployContract', {
-  //     privateKey58: privateKey58.toBase58(),
-  //     feePayerPublicKey58: feePayerPublicKey58.toBase58(),
-  //     nftHash: nftHash,
-  //     endorserHash: endorserHash,
-  //   });
-  // }
-
   createDeployContract(
     privateKey58: PrivateKey,
-    feePayerPublicKey58: PublicKey
+    feePayerPublicKey58: PublicKey,
+    nftHash: string,
+    endorserHash: string
   ) {
     return this._call('createDeployContract', {
       privateKey58: privateKey58.toBase58(),
       feePayerPublicKey58: feePayerPublicKey58.toBase58(),
+      nftHash: nftHash,
+      endorserHash: endorserHash,
     });
   }
 
@@ -161,7 +153,6 @@ export default class ZkappWorkerClient {
       };
       console.log(message);
       this.worker.postMessage(message);
-      console.log(this.worker);
       this.nextId++;
     });
     // return '';

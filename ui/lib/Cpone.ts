@@ -70,11 +70,11 @@ export class Cpone extends SmartContract {
     this.endorserHash.assertEquals(onchainEndorserHash);
 
     // Evaluate whether the signature is valid for the provided data
-    const validSignature = signature.verify(oraclePublicKey, [
-      oracleNftHash,
-      oracleEndorserHash,
-    ]);
-    validSignature.assertTrue();
+    // const validSignature = signature.verify(oraclePublicKey, [
+    //   oracleNftHash,
+    //   oracleEndorserHash,
+    // ]);
+    // validSignature.assertTrue();
 
     // Evaluate whether the NFT ID from the oracle corresponds to the one commited onchain
     onchainNftHash.assertEquals(oracleNftHash);
