@@ -75,7 +75,29 @@ Here is a breakdown of each of the steps involved in the process:
 
 Once the proof has been generated and the `isEndorsed` boolean state variable has been set to `true`, the next step is to mint the NFT on Ethereum (or any other EVM-based blockchain). However, in order to establish the authenticity of the NFT endorsement, it is crucial to verify the validity of the Mina proof on the EVM chain. This requires implementing a mechanism to bridge the proof from Mina to the EVM chain.
 
-At present, this aspect of the project is still in the research phase. We are actively exploring various approaches and evaluating potential solutions to ensure a secure and reliable bridging process.
+The way we achieve this is by leveraging [=nil; Foundation's Proof Market](https://docs.nil.foundation/proof-market/), _a marketplace where anyone can request a zkProof, and a network of specialized producers will respond to such requests_. 
+
+The following diagram illustrates how the bridging process works:
+
+<img alt="cpone-proof-bridgning" src="docs/img/proof-bridging.png">
+
+Here is a breakdown of each of the steps involved:
+
+* Preliminary Step: Not pictured in the diagram, this step involves retrieving the Mina ledger state and the zkApp account state. This is achieved by executing a simple GraphQL query to the blockchain and saving the results in two separate JSON objects, namely, `mina_ledger_state.json` and `mina_account_state.json`. 
+
+* Step 1: With the ledger and account states stored in JSON format, we utilize the Proof Market's APIs to solicit proofs. The process involves two distinct proofs - one for the Mina ledger state and another for our specific zkApp account state. Requesting a proof implies submitting it to the Proof Market and waiting for its execution.
+
+* Step 2: The proofs, potentially available after several hours, can be retrieved using the Proof Market APIs. Presumably named ledger_proof.bin and account_proof.bin, these proofs are essentially JSON objects, but the documentation refers to them with "bin" extensions.
+
+* Step 3: Upon retrieval, we can incorporate these proofs into the NFT's metadata and begin the minting process. The corresponding metadata fields are named `mina_ledger_proof` and `mina_account_proof`.
+
+* Step 4: To facilitate proof verification, =nil; Foundation has developed a smart contract. It only requires input of the proofs retrieved from the Proof Market, now existing within the NFT's metadata. Thus, to authenticate the NFT, one simply invokes the `verifyLedgerState` and `verifyAccountState` methods from the [`MinaState` smart contract](https://github.com/NilFoundation/mina-state-proof/blob/master/contracts/mina_state.sol).
+
+* Step 5: The MinaState smart contract emits two different events, `LedgerProofValidated` and `AccountProofValidated`, when a ledger proof and an account proof are successfully validated, respectively. Thus, a simple dApp could retrieve the proofs from the NFT's metadata, invoke the MinaState smart contract's verification methods, and monitor the emission of these events. If they're triggered, the NFT's endorsement is deemed valid.
+
+Note: As the Proof Market is still in its beta phase, this final process has not been tested. This is because the account proof validation remains a work in progress, as indicated in the documentation.
+
+<img alt="proof market not ready" src="docs/img/proof-market-not-ready.png">
 
 ## Setup & Usage
 

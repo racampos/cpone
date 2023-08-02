@@ -230,6 +230,21 @@
       "feepayerAlias": "auro-c3p2",
       "fee": "0.1",
       "smartContract": "Cpone"
+    },
+    "berkeley30": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley30.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1",
+      "smartContract": "Cpone"
+    },
+    "berkeley31": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley31.json",
+      "feepayerKeyPath": "/Users/rcampos/.cache/zkapp-cli/keys/auro-c3p2.json",
+      "feepayerAlias": "auro-c3p2",
+      "fee": "0.1"
     }
   }
 }
