@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { CircuitString, Poseidon } from 'snarkyjs';
 import crypto from 'crypto';
 
 import { prisma } from '@/lib/db';

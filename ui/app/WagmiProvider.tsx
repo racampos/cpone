@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Config, WagmiConfig } from 'wagmi';
+import { WagmiConfig } from 'wagmi';
 
 import { config } from '@/lib/wagmi';
 

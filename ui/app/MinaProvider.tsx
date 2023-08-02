@@ -1,9 +1,8 @@
 'use client';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
-import { createContext } from 'react';
 import type ZkappWorkerClient from '@/lib/zkappWorkerClient';
 import { Bool, Field } from 'snarkyjs';
-import type { PublicKey, Account, PrivateKey } from 'snarkyjs';
+import type { PublicKey, PrivateKey } from 'snarkyjs';
 
 import { MinaContext } from '@/lib/MinaContext';
 

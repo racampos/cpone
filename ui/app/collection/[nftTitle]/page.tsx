@@ -1,13 +1,9 @@
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
-
-import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
-
-import { MintNftButton, InputTweet, EndorseSection } from '@/components/client';
-
 import { NftInfoCard } from '@/components/server';
 import { redirect } from 'next/navigation';
-import { PrivateKey } from 'snarkyjs';
+
+import { MintNftButton, InputTweet, EndorseSection } from '@/components/client';
 
 export default async function MintNftPage({
   params,
@@ -27,6 +23,12 @@ export default async function MintNftPage({
     where: {
       authorId: address,
       title: originalTitle,
+    },
+  });
+
+  const user = await prisma.user.findFirst({
+    where: {
+      address,
     },
   });
 
@@ -90,10 +92,9 @@ export default async function MintNftPage({
         </div>
         <div className="w-full">
           <MintNftButton
-            endorsed={nft.endorsed}
-            minted={nft.minted}
-            ipfsLink={nft.ipfsLink}
-            etherscanLink={nft.etherscanLink}
+            nft={nft}
+            contractDeployed={user!.contractDeployed}
+            contractAddress={user!.contractAddress}
           />
         </div>
       </div>

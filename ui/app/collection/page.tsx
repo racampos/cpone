@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/db';
-import Image from 'next/image';
 import Link from 'next/link';
 import { revalidatePath } from 'next/cache';
 

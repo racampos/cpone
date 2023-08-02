@@ -8,6 +8,7 @@ import CopyHash from './CopyHash';
 import InputTweet from './InputTweet';
 import MinaInit from './MinaInit';
 import EndorseSection from './EndorseSection';
+import LinkToaster from './LinkToaster';
 
 export {
   DropZone,
@@ -20,4 +21,5 @@ export {
   InputTweet,
   MinaInit,
   EndorseSection,
+  LinkToaster,
 };

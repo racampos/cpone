@@ -1,16 +1,5 @@
-// import {
-//   Field,
-//   CircuitString,
-//   Poseidon,
-//   Mina,
-//   PrivateKey,
-//   PublicKey,
-//   AccountUpdate,
-// } from 'snarkyjs';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
 import { cookies } from 'next/headers';
-import type { Signature } from 'snarkyjs';
 
 export async function POST(request: Request) {
   const {
@@ -27,15 +16,6 @@ export async function POST(request: Request) {
   if (!userCookie) {
     return NextResponse.redirect('/');
   }
-
-  const address = userCookie.value;
-
-  //   const endorserCS = CircuitString.fromString(endorser);
-  //   const endorserHash = Poseidon.hash(endorserCS.toFields());
-
-  //   const nftHashCS = CircuitString.fromString(nftHash);
-  //   const nftPosiedonHash = Poseidon.hash(nftHashCS.toFields());
-
   const res = await fetch(
     `https://cpone-oracle2-7eeba98fba7a.herokuapp.com/getTweetByUrl?url=${tweetUrl}`
   );
@@ -46,47 +26,9 @@ export async function POST(request: Request) {
   const oracleEndorserHash: string = data.signedData.endorserHash;
   const oracleSignature: string = data.signature;
 
-  console.log({
-    oracleNftHash,
-    oracleEndorserHash,
-    oracleSignature,
-  });
-
   return NextResponse.json({
     oracleNftHash,
     oracleEndorserHash,
     oracleSignature: oracleSignature,
   });
-
-  //   const fetchedNftHash = Field(data.signedData.nftPoseidonHash);
-  //   const fetchedEndorserHash = Field(data.signedData.endorserHash);
-
-  //   const signature = data.signature;
-
-  //   const valid =
-  //     endorserHash.equals(fetchedEndorserHash).toBoolean() &&
-  //     nftPosiedonHash.equals(fetchedNftHash).toBoolean();
-
-  //   console.log('valid', valid);
-  //   console.log('endorserHash', endorserHash.toString());
-  //   console.log('nftPosiedonHash', nftPosiedonHash.toString());
-
-  //   console.log('fetchedNftHash', fetchedNftHash.toString());
-  //   console.log('fetchedEndorserHash', fetchedEndorserHash.toString());
-
-  //   if (valid) {
-  //     const nft = await prisma.nft.update({
-  //       where: {
-  //         nftHash: nftHash,
-  //         authorId: address,
-  //       },
-  //       data: {
-  //         endorsed: true,
-  //       },
-  //     });
-  //   }
-
-  //   return NextResponse.json({ valid });
-
-  // for now just checking here, but will call the verify function on the mina smart contract
 }

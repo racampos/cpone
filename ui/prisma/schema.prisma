@@ -27,6 +27,8 @@ model Nft {
 }
 
 model User {
-  address String @id @unique
-  NFTs    Nft[]
+  address          String  @id @unique
+  contractDeployed Boolean @default(false)
+  contractAddress  String?
+  NFTs             Nft[]
 }
