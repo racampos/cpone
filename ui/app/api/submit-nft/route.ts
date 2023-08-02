@@ -12,6 +12,7 @@ interface SubmitNftBody {
   date: string;
   address: string;
   imageUrl: string;
+  zkAppPrivateKey: string;
 }
 
 export async function POST(request: Request) {
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
     address,
     // prehash,
     imageUrl,
+    zkAppPrivateKey,
   }: SubmitNftBody = await request.json();
 
   const preHashString = {
@@ -49,6 +51,7 @@ export async function POST(request: Request) {
       endorser,
       date,
       imageUrl,
+      zkAppPrivateKey,
       nftHash: nftSha256Digested,
       owner: {
         connect: {

@@ -10,6 +10,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { cookies } from 'next/headers';
+import type { Signature } from 'snarkyjs';
 
 export async function POST(request: Request) {
   const {
@@ -41,10 +42,21 @@ export async function POST(request: Request) {
 
   const data = await res.json();
 
-  console.log('data', data);
-  console.log(`nftHash: ${nftHash}`);
+  const oracleNftHash: string = data.signedData.nftPoseidonHash;
+  const oracleEndorserHash: string = data.signedData.endorserHash;
+  const oracleSignature: string = data.signature;
 
-  return NextResponse.json({ data });
+  console.log({
+    oracleNftHash,
+    oracleEndorserHash,
+    oracleSignature,
+  });
+
+  return NextResponse.json({
+    oracleNftHash,
+    oracleEndorserHash,
+    oracleSignature: oracleSignature,
+  });
 
   //   const fetchedNftHash = Field(data.signedData.nftPoseidonHash);
   //   const fetchedEndorserHash = Field(data.signedData.endorserHash);
