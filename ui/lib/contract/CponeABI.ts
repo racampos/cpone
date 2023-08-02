@@ -2,7 +2,7 @@ import { parseAbi, narrow } from 'abitype';
 
 import json from './CponeContract.json';
 
-export const bytecode = `0x${json.bytecode}` as `0x${string}`;
+export const bytecode = `0x${json.deployedBytecode}` as `0x${string}`;
 
 const abi = [
   {
