@@ -76,7 +76,7 @@ export default function MintNftButton({
       return;
     }
 
-    console.log(ipfsLink); // will then post ipfs link
+    console.log(`IPFS link: https://ipfs.io/ipfs/${ipfsMetadataLink}`);
 
     return ipfsLink;
   };
@@ -96,7 +96,7 @@ export default function MintNftButton({
     const hash = await walletClient?.deployContract({
       bytecode,
       abi: CponeAbi,
-      args: [ipfsLink!],
+      args: [newIpfsLink!],
     });
 
     console.log(hash);

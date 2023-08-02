@@ -138,10 +138,11 @@ export async function POST(request: Request) {
   fullNftFormData.append('metadata', metadata);
 
   const metadataRes = await fetch(
-    'https://api.pinata.cloud/pinning/pinFileToIPFS',
+    'https://api.pinata.cloud/pinning/pinJSONToIPFS',
     {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${JWT}`,
       },
       body: metadata,
@@ -152,14 +153,14 @@ export async function POST(request: Request) {
 
   console.log(ipfsMetadataLink);
 
-  // const updateNftIPFS = await prisma.nft.update({
-  //   where: {
-  //     nftHash,
-  //   },
-  //   data: {
-  //     ipfsLink: ipfsMetadataLink,
-  //   },
-  // });
+  const updateNftIPFS = await prisma.nft.update({
+    where: {
+      nftHash,
+    },
+    data: {
+      ipfsLink: ipfsMetadataLink.IpfsHash,
+    },
+  });
 
-  return NextResponse.json({ ipfsMetadataLink });
+  return NextResponse.json({ ipfsMetadataLink: ipfsMetadataLink.IpfsHash });
 }
