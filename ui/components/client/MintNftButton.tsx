@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { useAccount, useWalletClient } from 'wagmi';
 
 import { cn } from '@/lib/utils';
 
@@ -14,6 +15,14 @@ export default function MintNftButton({
   etherscanLink: string | null;
   ipfsLink: string | null;
 }) {
+  const { address, connector } = useAccount();
+  const { data: walletClient, isError, isLoading } = useWalletClient();
+
+  // mint NFT as a single new contract here
+  const handleMintNFT = async () => {
+    console.log('minting NFT');
+  };
+
   return !minted ? (
     <button
       type="button"
@@ -23,6 +32,7 @@ export default function MintNftButton({
           : 'bg-gray-300 cursor-not-allowed'
       )} rounded-md px-3.5 w-1/2 py-2.5 text-base font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 `}
       disabled={!endorsed}
+      onClick={handleMintNFT}
     >
       {!endorsed ? 'Not Endorsed Yet' : 'Mint'}
     </button>

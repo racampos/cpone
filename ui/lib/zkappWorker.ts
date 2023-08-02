@@ -5,13 +5,15 @@ import {
   Field,
   Signature,
   Bool,
+  PrivateKey,
+  AccountUpdate,
 } from 'snarkyjs';
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-import type { Cpone } from '@/lib/Cpone';
+import { Cpone } from '@/lib/Cpone';
 
 const state = {
   Cpone: null as null | typeof Cpone,
@@ -64,6 +66,7 @@ const functions = {
     nftHash: string;
     endorserHash: string;
   }) => {
+    console.log({ args });
     const transaction = await Mina.transaction(() => {
       state.zkapp!.setNftHash(Field(args.nftHash));
       state.zkapp!.setEndorserHash(Field(args.endorserHash));
@@ -71,11 +74,16 @@ const functions = {
     state.transaction = transaction;
   },
   createVerifyTransaction: async (args: {
+    feePayerPublicKey58: string;
     nftHash: string;
     endorserHash: string;
     signature: string;
   }) => {
-    const transaction = await Mina.transaction(() => {
+    const feePayer: PublicKey = PublicKey.fromBase58(args.feePayerPublicKey58);
+
+    console.log({ args });
+
+    const transaction = await Mina.transaction(feePayer, () => {
       state.zkapp!.verify(
         Field(args.nftHash),
         Field(args.endorserHash),
@@ -89,6 +97,28 @@ const functions = {
     const transaction = await Mina.transaction(() => {
       state.zkapp!.isEndorsed.set(Bool(false));
     });
+    state.transaction = transaction;
+  },
+
+  createDeployContract: async (args: {
+    privateKey58: string;
+    feePayerPublicKey58: string;
+    nftHash: string;
+    endorserHash: string;
+  }) => {
+    const feePayer: PublicKey = PublicKey.fromBase58(args.feePayerPublicKey58);
+    const zkAppPrivateKey: PrivateKey = PrivateKey.fromBase58(
+      args.privateKey58
+    );
+
+    const transaction = await Mina.transaction(feePayer, () => {
+      AccountUpdate.fundNewAccount(feePayer);
+      state.zkapp!.deploy({});
+      state.zkapp!.setNftHash(Field(args.nftHash));
+      state.zkapp!.setEndorserHash(Field(args.endorserHash));
+    });
+
+    transaction.sign([zkAppPrivateKey]);
     state.transaction = transaction;
   },
 
@@ -129,6 +159,7 @@ if (typeof window !== 'undefined') {
         id: event.data.id,
         data: returnData,
       };
+      console.log('Web Worker Response:', message);
       postMessage(message);
     }
   );

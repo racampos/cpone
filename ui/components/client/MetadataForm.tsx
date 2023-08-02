@@ -1,5 +1,5 @@
 'use client';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useContext, useEffect } from 'react';
 import { Transition, Dialog } from '@headlessui/react';
 import { useAccount } from 'wagmi';
 import { CheckIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline';
@@ -7,6 +7,8 @@ import crypto from 'crypto';
 import { Poseidon, CircuitString } from 'snarkyjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+import { MinaContext } from '@/lib/MinaContext';
 
 import { cn, formatDate } from '@/lib/utils';
 import { CopyHash } from '@/components/client';
@@ -48,12 +50,15 @@ export default function MetadataForm({
     date: '',
   });
   const [submitted, setSubmitted] = useState<boolean>(false);
-  const [hash, setHash] = useState<string>('');
+  const [nftHash, setNftHash] = useState<string>('');
   const [shake, setShake] = useState<boolean>(false);
   const [loadingSubmission, setLoadingSubmission] = useState<boolean>(false);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
   const { address, isConnected } = useAccount();
+  const transactionFee = 0.1;
+
+  const mina = useContext(MinaContext);
 
   const router = useRouter();
 
@@ -107,6 +112,85 @@ export default function MetadataForm({
     return passed;
   };
 
+  // const handleMetadata = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+
+  //   const isValidSubmission = handleValidationCheck();
+
+  //   if (!isValidSubmission) {
+  //     setShake(true);
+  //     setTimeout(() => setShake(false), 560);
+  //     return;
+  //   }
+
+  //   setShowMetadata(false);
+  //   setLoadingSubmission(true);
+
+  //   const res = await fetch('/api/submit-nft', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       ...metadata,
+  //       endorser: metadata.endorser.slice(1),
+  //       address: address as string,
+  //       imageUrl: selectedImageUrl,
+  //     }),
+  //   });
+
+  //   if (res.ok) {
+  //     const { nftHash } = await res.json();
+  //     setHash(nftHash);
+
+  //     const cleanEndorser = metadata.endorser.slice(1);
+
+  //     console.log('loading contract');
+  //     await mina.ZkappWorkerClient?.loadContract();
+
+  //     console.log('compiling contract');
+  //     await mina.ZkappWorkerClient?.compileContract();
+  //     console.log('compiled contract');
+
+  //     console.log('init zk app instance');
+  //     await mina.ZkappWorkerClient?.initZkappInstance(mina.zkAppPublicKey!);
+
+  //     console.log('creating deploy contract');
+  //     console.log(mina.zkAppPrivateKey!);
+  //     console.log(mina.userPublicKey!);
+  //     await mina.ZkappWorkerClient!.createDeployContract(
+  //       mina.zkAppPrivateKey!,
+  //       mina.userPublicKey!
+  //     );
+  //     console.log('created deploy contract');
+
+  //     console.log('creating transaction json');
+  //     const transactionJSON =
+  //       await mina.ZkappWorkerClient!.getTransactionJSON();
+
+  //     console.log('created transaction json');
+
+  //     console.log('sending transaction');
+  //     const { hash } = await (window as any).mina.sendTransaction({
+  //       transaction: transactionJSON,
+  //       feePayer: {
+  //         fee: transactionFee,
+  //         memo: '',
+  //       },
+  //     });
+  //     console.log('sent transaction');
+
+  //     console.log(
+  //       'See transaction at https://berkeley.minaexplorer.com/transaction/' +
+  //         hash
+  //     );
+
+  //     setShowConfirmation(true);
+  //     setSubmissionSuccess(true);
+  //   }
+  //   setLoadingSubmission(false); // need to do something for error
+  // };
+
   const handleMetadata = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -131,19 +215,80 @@ export default function MetadataForm({
         endorser: metadata.endorser.slice(1),
         address: address as string,
         imageUrl: selectedImageUrl,
+        zkAppPrivateKey: mina.zkAppPrivateKey!.toBase58(),
       }),
     });
 
-    console.log(res);
-
     if (res.ok) {
-      const { nftHash } = await res.json();
-      setHash(nftHash);
+      const { nftHash: _nftHash } = await res.json();
+      setNftHash(_nftHash);
+    }
+  };
+
+  useEffect(() => {
+    if (!nftHash) return;
+
+    (async () => {
+      const { Poseidon, CircuitString } = await import('snarkyjs');
+      const cleanEndorser = metadata.endorser.slice(1);
+
+      const endorserCS = CircuitString.fromString(cleanEndorser);
+      const endorserHash = Poseidon.hash(endorserCS.toFields()).toString();
+
+      const nftHashCS = CircuitString.fromString(nftHash);
+      const nftPosiedonHash = Poseidon.hash(nftHashCS.toFields()).toString();
+
+      console.log('loading contract');
+      await mina.ZkappWorkerClient?.loadContract();
+
+      console.log('compiling contract');
+      await mina.ZkappWorkerClient?.compileContract();
+      console.log('compiled contract');
+
+      console.log('init zk app instance');
+      await mina.ZkappWorkerClient?.initZkappInstance(mina.zkAppPublicKey!);
+
+      console.log('creating deploy contract');
+      console.log(mina.zkAppPrivateKey!);
+      console.log(mina.userPublicKey!);
+
+      await mina.ZkappWorkerClient!.createDeployContract(
+        mina.zkAppPrivateKey!,
+        mina.userPublicKey!,
+        nftPosiedonHash,
+        endorserHash
+      );
+      console.log('created deploy contract');
+
+      console.log('creating prove tx');
+      await mina.ZkappWorkerClient!.createProveTransaction();
+      console.log('created prove tx');
+
+      console.log('creating transaction json');
+      const transactionJSON =
+        await mina.ZkappWorkerClient!.getTransactionJSON();
+
+      console.log('created transaction json');
+
+      console.log('sending transaction');
+      const { hash: txHash } = await (window as any).mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: transactionFee,
+          memo: '',
+        },
+      });
+      console.log('sent transaction');
+
+      console.log(
+        'See transaction at https://berkeley.minaexplorer.com/transaction/' +
+          txHash
+      );
+      setLoadingSubmission(false); // need to do something for error
       setShowConfirmation(true);
       setSubmissionSuccess(true);
-    }
-    setLoadingSubmission(false); // need to do something for error
-  };
+    })();
+  }, [nftHash]);
 
   const handleResetForm = () => {
     setShowDropzone(true);
@@ -248,7 +393,7 @@ export default function MetadataForm({
                   </Fragment>
                   {/* <div className="flex w-full"> */}
                   <div className="flex mt-5 sm:mt-6 justify-center">
-                    <CopyHash hash={hash} />
+                    <CopyHash hash={nftHash} />
                   </div>
                   <div className="flex gap-x-4 mt-5 sm:mt-6">
                     <button

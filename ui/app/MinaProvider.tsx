@@ -25,7 +25,11 @@ interface MinaContext extends minaState {
   setMinaState: Dispatch<SetStateAction<minaState>>;
 }
 
-export default function MinaInit({ children }: { children: React.ReactNode }) {
+export default function MinaProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [minaState, setMinaState] = useState<minaState>({
     ZkappWorkerClient: null,
     hasWallet: null,
@@ -59,7 +63,7 @@ export default function MinaInit({ children }: { children: React.ReactNode }) {
         const zkappWorkerClient = new ZkappWorkerClient();
         await timeout(5);
         const mina = (window as any).mina;
-        await zkappWorkerClient.setActiveInstanceToBerkeley(); // nothing seems to run after this
+        await zkappWorkerClient.setActiveInstanceToBerkeley();
 
         if (!mina) {
           setMinaState({
@@ -94,9 +98,17 @@ export default function MinaInit({ children }: { children: React.ReactNode }) {
     })();
   }, []);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
-    <MinaContext.Provider value={{ ...minaState, setMinaState }}>
-      {children}
+    <MinaContext.Provider
+      value={{
+        ...minaState,
+        setMinaState,
+      }}
+    >
+      {mounted && children}
     </MinaContext.Provider>
   );
 }
