@@ -5,6 +5,7 @@ import { Bool, Field } from 'snarkyjs';
 import type { PublicKey, PrivateKey } from 'snarkyjs';
 
 import { MinaContext } from '@/lib/MinaContext';
+import { PrismaNFT } from '@/lib/types';
 
 interface minaState {
   ZkappWorkerClient: ZkappWorkerClient | null;
@@ -42,6 +43,8 @@ export default function MinaProvider({
     zkAppPrivateKey: null,
     creatingTransaction: false,
   });
+
+  const [currentNft, setCurrentNft] = useState<null | PrismaNFT>(null);
 
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState('Loading...');
@@ -105,6 +108,8 @@ export default function MinaProvider({
       value={{
         ...minaState,
         setMinaState,
+        currentNft,
+        setCurrentNft,
       }}
     >
       {mounted && children}

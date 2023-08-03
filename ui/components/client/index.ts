@@ -9,6 +9,7 @@ import InputTweet from './InputTweet';
 import MinaInit from './MinaInit';
 import EndorseSection from './EndorseSection';
 import LinkToaster from './LinkToaster';
+import UpdateCurrentNft from './UpdateCurrentNft';
 
 export {
   DropZone,
@@ -22,4 +23,5 @@ export {
   MinaInit,
   EndorseSection,
   LinkToaster,
+  UpdateCurrentNft,
 };

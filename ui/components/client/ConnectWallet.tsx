@@ -33,7 +33,6 @@ export default function ConnectWallet() {
       });
 
       const data = await res.json();
-      console.log(data);
     }
   };
 

@@ -3,7 +3,12 @@ import { prisma } from '@/lib/db';
 import { NftInfoCard } from '@/components/server';
 import { redirect } from 'next/navigation';
 
-import { MintNftButton, InputTweet, EndorseSection } from '@/components/client';
+import {
+  MintNftButton,
+  InputTweet,
+  EndorseSection,
+  UpdateCurrentNft,
+} from '@/components/client';
 
 export default async function MintNftPage({
   params,
@@ -37,20 +42,21 @@ export default async function MintNftPage({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center content-center align-middle w-full">
-      <h1 className="text-3xl font-bold my-4">{nft?.title}</h1>
-      <div className="flex flex-col w-full h-full">
-        <div className="flex flex-row">
-          <div className="flex w-1/2 items-center justify-center">
-            <img src={nft?.imageUrl} alt="selected image" className="" />
-          </div>
-          <div className="w-1/2">
-            <div className="flex flex-col h-full items-center justify-center p-4 gap-y-10">
-              <div className="w-full h-1/2 max-w-2xl px-6 shadow-md bg-white flex flex-col rounded-xl overflow-scroll relative">
-                <NftInfoCard nft={nft} />
-              </div>
-              <div className="w-full max-w-2xl p-6 shadow-md bg-white flex flex-col rounded-xl">
-                {/* <div className="flex flex-col items-center content-center justify-center gap-y-2 ">
+    <UpdateCurrentNft nft={nft}>
+      <div className="flex flex-col items-center justify-center content-center align-middle w-full">
+        <h1 className="text-3xl font-bold my-4">{nft?.title}</h1>
+        <div className="flex flex-col w-full h-full">
+          <div className="flex flex-row">
+            <div className="flex w-1/2 items-center justify-center">
+              <img src={nft?.imageUrl} alt="selected image" className="" />
+            </div>
+            <div className="w-1/2">
+              <div className="flex flex-col h-full items-center justify-center p-4 gap-y-10">
+                <div className="w-full h-1/2 max-w-2xl px-6 shadow-md bg-white flex flex-col rounded-xl overflow-scroll relative">
+                  <NftInfoCard nft={nft} />
+                </div>
+                <div className="w-full max-w-2xl p-6 shadow-md bg-white flex flex-col rounded-xl">
+                  {/* <div className="flex flex-col items-center content-center justify-center gap-y-2 ">
                   <div className="flex gap-x-2 align-middle content-center items-center">
                     {nft.endorsed ? (
                       <>
@@ -80,24 +86,25 @@ export default async function MintNftPage({
                     zkAppPrivateKey={nft.zkAppPrivateKey}
                   />
                 </div> */}
-                <EndorseSection
-                  endorser={nft.endorser}
-                  endorsed={nft.endorsed}
-                  zkAppPrivateKey58={nft.zkAppPrivateKey}
-                  nftHash={nft.nftHash}
-                />
+                  <EndorseSection
+                    endorser={nft.endorser}
+                    endorsed={nft.endorsed}
+                    zkAppPrivateKey58={nft.zkAppPrivateKey}
+                    nftHash={nft.nftHash}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="w-full">
-          <MintNftButton
-            nft={nft}
-            contractDeployed={user!.contractDeployed}
-            contractAddress={user!.contractAddress}
-          />
+          <div className="flex flex-col items-center content-center justify-center w-full">
+            <MintNftButton
+              nft={nft}
+              contractDeployed={user!.contractDeployed}
+              contractAddress={user!.contractAddress}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </UpdateCurrentNft>
   );
 }

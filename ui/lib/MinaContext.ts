@@ -2,6 +2,8 @@ import { createContext, Dispatch, SetStateAction } from 'react';
 import type ZkappWorkerClient from '@/lib/zkappWorkerClient';
 import type { Bool, Field, PublicKey, PrivateKey } from 'snarkyjs';
 
+import { PrismaNFT } from '@/lib/types';
+
 interface minaState {
   ZkappWorkerClient: ZkappWorkerClient | null;
   hasWallet: boolean | null;
@@ -18,6 +20,8 @@ interface minaState {
 
 interface MinaContext extends minaState {
   setMinaState: Dispatch<SetStateAction<minaState>>;
+  currentNft: PrismaNFT | null;
+  setCurrentNft: Dispatch<SetStateAction<PrismaNFT | null>>;
 }
 
 export const MinaContext = createContext<MinaContext>({
@@ -33,4 +37,6 @@ export const MinaContext = createContext<MinaContext>({
   zkAppPublicKey: null,
   zkAppPrivateKey: null,
   creatingTransaction: false,
+  currentNft: null,
+  setCurrentNft: () => {},
 });

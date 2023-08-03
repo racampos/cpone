@@ -11,7 +11,7 @@ import { publicProvider } from 'wagmi/providers/public';
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [sepolia],
   [
-    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_URL! }),
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
     publicProvider(),
   ]
 );

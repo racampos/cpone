@@ -53,39 +53,6 @@ export default function InputTweet({
     const minaWindow = (window as any).mina;
     console.log(`minaWindow: ${minaWindow}`);
 
-    // const publicKeyBase58: string = (
-    //   await minaWindow.ZkappWorkerClient.requestAccounts()
-    // )[0];
-
-    // const publicKey = PublicKey.fromBase58(publicKeyBase58);
-    // const res = await mina.ZkappWorkerClient!.fetchAccount({
-    //   publicKey: publicKey!,
-    // });
-
-    // const signature = Signature.fromObject(oracleSignature as any);
-
-    // console.log(`signature r: ${signature.r}`);
-    // console.log(`signature s: ${signature.s}`);
-    // console.log();
-
-    // const sig = new Signature(signature.r, signature.s);
-
-    // console.log(`sig r json: ${sig.r.toJSON()}`);
-
-    // const oracleSignatureJSON = signature.toJSON();
-    // console.log(`oracleSignatureJSON: ${oracleSignatureJSON}`);
-    // const oracleSignature58 = sig.toBase58();
-    // console.log(`oracleSignature58: ${oracleSignature58}`);
-
-    // console.log(`oracleSignature: ${oracleSignature}`);
-    // console.log(`oracleNftHash: ${oracleNftHash}`);
-    // console.log(`oracleEndorserHash: ${oracleEndorserHash}`);
-    // console.log('Inside handleVerify');
-    // console.log(
-    //   `passed in props: ${oracleNftHash}, ${oracleEndorserHash}, ${oracleSignature}`
-    // );
-    // console.log(`fetchedNFTData ${fetchedNFTData}`);
-
     console.log('getting nftHash');
     const _nftHash = await mina.ZkappWorkerClient?.getNftHash();
 
@@ -128,7 +95,7 @@ export default function InputTweet({
     ).toBoolean();
     isNowEndorsed ? console.log('Endorsed!') : console.log('Not endorsed!');
 
-    setIsEndorsed(isNowEndorsed);
+    // setIsEndorsed(isNowEndorsed);
   };
 
   const handleTweetCheck = async () => {
@@ -164,8 +131,6 @@ export default function InputTweet({
       //   oracleEndorserHash,
       //   oracleSignature,
       // });
-
-      setFetching(false);
     }
   };
 

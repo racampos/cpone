@@ -13,15 +13,13 @@ contract Cpone is ERC721, ERC721URIStorage, Ownable {
 
     event NFTMinted(address indexed to, uint256 tokenId);
 
-    constructor(string memory _uri) ERC721("Cpone", "CPO") {
-        safeMint(msg.sender, _uri);
-    }
+    constructor() ERC721("Cpone", "CPO") {}
 
     function _baseURI() internal pure override returns (string memory) {
         return "https://ipfs.io/ipfs/";
     }
 
-    function safeMint(address to, string memory uri) public onlyOwner {
+    function safeMint(address to, string memory uri) public {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

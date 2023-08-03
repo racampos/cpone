@@ -151,16 +151,16 @@ export async function POST(request: Request) {
 
   const ipfsMetadataLink = await metadataRes.json();
 
-  console.log(ipfsMetadataLink);
-
   const updateNftIPFS = await prisma.nft.update({
     where: {
       nftHash,
     },
     data: {
-      ipfsLink: ipfsMetadataLink.IpfsHash,
+      ipfsLink: `https://ipfs.io/ipfs/${ipfsMetadataLink.IpfsHash}`,
     },
   });
 
-  return NextResponse.json({ ipfsMetadataLink: ipfsMetadataLink.IpfsHash });
+  return NextResponse.json({
+    CID: `${ipfsMetadataLink.IpfsHash}`,
+  });
 }

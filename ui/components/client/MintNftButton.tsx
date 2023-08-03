@@ -1,9 +1,16 @@
 'use client';
 import { useState, useEffect, useContext } from 'react';
-import { useAccount, useConnect, useWalletClient } from 'wagmi';
+import {
+  useAccount,
+  useConnect,
+  useWalletClient,
+  useContractWrite,
+  usePrepareContractWrite,
+} from 'wagmi';
 import { useRouter } from 'next/navigation';
 
-import { bytecode, CponeAbi } from '@/lib/contract/CponeABI';
+import { bytecode, CponeContract } from '@/lib/contract/CponeABI';
+import { cponeContractAddress } from '@/lib/contants';
 import { MinaContext } from '@/lib/MinaContext';
 import { cn } from '@/lib/utils';
 import { PrismaNFT } from '@/lib/types';
@@ -32,9 +39,24 @@ export default function MintNftButton({
   } = nft;
 
   const mina = useContext(MinaContext);
+  const { address, connector, isConnected } = useAccount();
+
   const [showLinkToaster, setShowLinkToaster] = useState(false);
 
-  const { address, connector, isConnected } = useAccount();
+  const { config } = usePrepareContractWrite({
+    address: cponeContractAddress,
+    abi: CponeContract.abi,
+    functionName: 'safeMint',
+    args: [address!, mina.currentNft!.ipfsLink?.split('/')[4]!],
+  });
+
+  const {
+    data,
+    isLoading: isMintLoading,
+    isSuccess: isMintSuccess,
+    write,
+  } = useContractWrite(config);
+
   const { connect } = useConnect();
   const {
     data: walletClient,
@@ -76,11 +98,12 @@ export default function MintNftButton({
       return;
     }
 
-    console.log(`IPFS link: https://ipfs.io/ipfs/${ipfsMetadataLink}`);
+    console.log(`IPFS link: ${ipfsMetadataLink}`);
+
+    mina.setCurrentNft((nft) => ({ ...nft!, ipfsLink: ipfsMetadataLink }));
 
     return ipfsLink;
   };
-
   // mint NFT as a single new contract here
   const handleMintNFT = async () => {
     console.log('minting NFT');
@@ -93,20 +116,42 @@ export default function MintNftButton({
 
     console.log('done');
 
-    const hash = await walletClient?.deployContract({
-      bytecode,
-      abi: CponeAbi,
-      args: [newIpfsLink!],
-    });
-
-    console.log(hash);
+    write!();
   };
 
-  const handleDeployContract = async () => {};
+  useEffect(() => {
+    if (!isMintSuccess) return;
+    console.log(JSON.stringify(data));
+
+    const txHash = data?.hash;
+
+    (async () => {
+      const res = await fetch('/api/update-etherscan-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nftHash,
+          txHash,
+        }),
+      });
+
+      const { etherscanLink }: { etherscanLink: string } = await res.json();
+
+      if (etherscanLink) {
+        mina.setCurrentNft((nft) => ({
+          ...nft!,
+          etherscanLink: etherscanLink,
+          minted: true,
+        }));
+      }
+    })();
+  }, [isMintSuccess]);
 
   return (
     <>
-      {!minted ? (
+      {!mina.currentNft!.minted ? (
         <button
           type="button"
           className={`${cn(
@@ -124,22 +169,22 @@ export default function MintNftButton({
             : 'Mint'}
         </button>
       ) : (
-        <div className="flex items-center justify-center">
+        <div className="flex border rounded-md overflow-hidden">
           <a
-            href={ipfsLink!}
+            href={mina.currentNft!.ipfsLink!}
             target="_blank"
             rel="noreferrer noopener"
-            className="rounded-md bg-indigo-600 px-3.5 w-1/2 py-2.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="flex-1 flex items-center justify-center text-center py-2 px-5 border-r text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            View Metadata
+            IPFS Link
           </a>
           <a
-            href={etherscanLink!}
+            href={mina.currentNft!.etherscanLink!}
             target="_blank"
             rel="noreferrer noopener"
-            className="rounded-md bg-pink-600 px-3.5 w-1/2 py-2.5 text-base font-semibold text-white shadow-sm hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600"
+            className="flex-1 flex items-center justify-center text-center py-2 px-4 text-base font-semibold text-white bg-pink-600 hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-600 align-middle"
           >
-            Etherscan Link
+            Etherscan
           </a>
         </div>
       )}

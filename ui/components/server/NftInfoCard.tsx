@@ -55,3 +55,5 @@ export default async function NftInfoCard({ nft }: { nft: Nft }) {
     </div>
   );
 }
+
+// 0x9ad8a1f25fe8c6db83e0b86b175e3d5a3509cb1ab773807b217eb683ec9f0ebc

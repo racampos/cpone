@@ -36,12 +36,9 @@ EndorseSectionProps) {
 
   useEffect(() => {
     (async () => {
-      const { PrivateKey, PublicKey } = await import('snarkyjs');
+      const { PrivateKey } = await import('snarkyjs');
 
       const fetchedPrivateKey = PrivateKey.fromBase58(zkAppPrivateKey58);
-
-      //   const isEndorsedBool = await mina.ZkappWorkerClient!.getNftHash();
-      //   console.log(isEndorsedBool.toString());
 
       if (fetchedPrivateKey.equals(mina.zkAppPrivateKey!).toBoolean()) {
         console.log('zkAppPrivateKey is correct');
@@ -52,7 +49,7 @@ EndorseSectionProps) {
 
       const fetchedPublicKey = fetchedPrivateKey.toPublicKey();
 
-      const res = await mina.ZkappWorkerClient!.fetchAccount({
+      await mina.ZkappWorkerClient!.fetchAccount({
         publicKey: fetchedPublicKey!,
       });
 
@@ -103,7 +100,12 @@ EndorseSectionProps) {
         }),
       });
 
-      const { isEndorsed: isEndorsedServer } = await res.json();
+      const { isEndorsed: isEndorsedServer }: { isEndorsed: string } =
+        await res.json();
+      mina.setCurrentNft((nft) => ({
+        ...nft!,
+        endorsed: isEndorsedServer === 'true' ? true : false,
+      }));
 
       console.log(`isEndorsedServer: ${isEndorsedServer}`);
     }
@@ -112,7 +114,7 @@ EndorseSectionProps) {
   return (
     <div className="flex flex-col items-center content-center justify-center gap-y-2 ">
       <div className="flex gap-x-2 align-middle content-center items-center">
-        {isEndorsed ? (
+        {mina.currentNft!.endorsed ? (
           <>
             <div className="mx-auto flex h-5 w-5 items-center justify-center rounded-full bg-green-100">
               <CheckIcon
@@ -136,9 +138,9 @@ EndorseSectionProps) {
         />
       </div>
       <InputTweet
-        endorser={endorser}
-        nftHash={nftHash}
-        isEndorsed={isEndorsed}
+        endorser={mina.currentNft!.endorser}
+        nftHash={mina.currentNft!.nftHash}
+        isEndorsed={mina.currentNft!.endorsed}
         setIsEndorsed={setIsEndorsed}
         initializingZkApp={initializingZkApp}
       />
