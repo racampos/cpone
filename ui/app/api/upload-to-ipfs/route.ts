@@ -161,6 +161,6 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({
-    CID: `${ipfsMetadataLink.IpfsHash}`,
+    ipfsMetadataLink: `${ipfsMetadataLink.IpfsHash}`,
   });
 }

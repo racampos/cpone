@@ -171,7 +171,7 @@ export default function MintNftButton({
       ) : (
         <div className="flex border rounded-md overflow-hidden">
           <a
-            href={mina.currentNft!.ipfsLink!}
+            href={`${mina.currentNft!.ipfsLink!}`}
             target="_blank"
             rel="noreferrer noopener"
             className="flex-1 flex items-center justify-center text-center py-2 px-5 border-r text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
